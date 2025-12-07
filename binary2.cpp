@@ -1,0 +1,30 @@
+#include<iostream>
+using namespace std;
+
+int binarySearch(int* ptr, int n, int key){
+    int st = 0, end = n - 1;
+
+    while(st <= end){
+        int mid = (st + end) / 2;
+
+        if(ptr[mid] == key){
+            return mid;
+        }
+        else if(ptr[mid] < key){
+            st = mid + 1;
+        }
+        else{
+            end = mid - 1;
+        }
+    }
+    return -1;
+}
+
+int main(){
+    int arr[] = {1,3,4,7,8,9,12,15,34,48};
+    int n = sizeof(arr)/sizeof(int);
+
+    cout << binarySearch(arr, n, 34) << endl;
+
+    return 0;
+}
