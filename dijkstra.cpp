@@ -1,46 +1,50 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <climits>
 using namespace std;
-void dijkstra(int n, vector<vector<pair<int,int>>> &adj, int src) {
-    vector<int> dist(n, 1e9);
+
+struct Edge {
+    int u, v, w;
+};
+
+int main() {
+    int n, m;
+    cin >> n >> m;     // n = vertices, m = edges
+
+    vector<Edge> edges(m);
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i].u >> edges[i].v >> edges[i].w;
+    }
+
+    int src;
+    cin >> src;
+
+    vector<int> dist(n, INT_MAX);
     dist[src] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, src});
-    while(!pq.empty()) {
-        auto top = pq.top();
-        pq.pop();
-        int d = top.first;
-        int node = top.second;
-        for(auto &it : adj[node]) {
-            int nextNode = it.first;
-            int weight = it.second;
-            if(d + weight < dist[nextNode]) {
-                dist[nextNode] = d + weight;
-                pq.push({dist[nextNode], nextNode});
+
+    // Relax all edges n-1 times
+    for (int i = 1; i <= n - 1; i++) {
+        for (auto &e : edges) {
+            if (dist[e.u] != INT_MAX && dist[e.u] + e.w < dist[e.v]) {
+                dist[e.v] = dist[e.u] + e.w;
             }
         }
     }
-    cout << "\nShortest distances from source " << src << ":\n";
-    for(int i = 0; i < n; i++) {
-        cout << "Node " << i << " -> " << dist[i] << endl;
+
+    // Check for negative cycle
+    for (auto &e : edges) {
+        if (dist[e.u] != INT_MAX && dist[e.u] + e.w < dist[e.v]) {
+            cout << "Negative cycle detected!\n";
+            return 0;
+        }
     }
-}
-int main() {
-    int n, m;
-    cout << "Enter number of vertices and edges: ";
-    cin >> n >> m;
-    vector<vector<pair<int,int>>> adj(n);
-    cout << "Enter edges (u v weight):\n";
-    for(int i = 0; i < m; i++) {
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj[u].push_back({v, w});
-        adj[v].push_back({u, w}); // remove for directed graph
+
+    // Print distances
+    for (int i = 0; i < n; i++) {
+        cout << "Dist to " << i << " = ";
+        if (dist[i] == INT_MAX) cout << "INF\n";
+        else cout << dist[i] << "\n";
     }
-    int src;
-    cout << "Enter source vertex: ";
-    cin >> src;
-    dijkstra(n, adj, src);
+
     return 0;
 }
