@@ -4,7 +4,7 @@ using namespace std;
 
 string encryptMatrix(string text, int rows) {
     int n = text.size();
-    int cols = (n + rows - 1) / rows;
+    int cols = n;
 
     vector<vector<char>> mat(rows, vector<char>(cols, '*'));
 
@@ -24,8 +24,8 @@ string encryptMatrix(string text, int rows) {
 int main() {
     string text = "HELLOWORLD";
     int rows = 3;
-
-    cout << "Encrypted: " << encryptMatrix(text, rows);
+    cout << "Before Encryption: " << text << endl;
+    cout << "After Encrypted: " << encryptMatrix(text, rows);
     cout<<endl;
     return 0;
 }
